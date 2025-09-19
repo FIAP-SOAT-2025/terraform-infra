@@ -19,9 +19,17 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Data sources
-data "aws_availability_zones" "available" {
-  state = "available"
+provider "kubectl" {
+  host                   = aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.auth.token
+  load_config_file       = false
+}
+
+data "aws_caller_identity" "current" {}
+
+locals {
+  availability_zones = ["us-east-1a", "us-east-1b"]
 }
 
 data "aws_eks_cluster" "cluster" {
