@@ -6,7 +6,7 @@ resource "kubectl_manifest" "ebs_csi_service_account" {
     aws_eks_node_group.node_group,
     aws_eks_addon.ebs_csi_driver
   ]
-  
+
   yaml_body = <<YAML
 apiVersion: v1
 kind: ServiceAccount
