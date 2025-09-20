@@ -26,6 +26,7 @@ jobs:
   terraform-check:
     name: Terraform Check
     runs-on: ubuntu-latest
+    environment: production
     defaults:
       run:
         working-directory: ./
