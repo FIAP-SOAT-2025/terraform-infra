@@ -1,11 +1,11 @@
 terraform {
+  backend "s3" {
+    bucket         = "terraform-state-tc3-g38-lanchonete-infra"
+    key            = "infra/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-state-lock-table"
+  }
   required_providers {
-    backend "s3" {
-      bucket         = "terraform-state-tc3-g38-lanchonete-infra"
-      key            = "infra/terraform.tfstate"
-      region         = "us-east-1"
-      dynamodb_table = "terraform-state-lock-table"
-    }
     aws = {
       source  = "hashicorp/aws"
       version = "6.13.0"
