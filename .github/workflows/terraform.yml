@@ -110,6 +110,7 @@ jobs:
 
   terraform-destroy:
     name: Infrastructure Destroy
+    needs: terraform-check
     runs-on: ubuntu-latest
     if: github.event.inputs.action == 'destroy'
     defaults:
