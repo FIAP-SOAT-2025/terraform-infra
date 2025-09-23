@@ -1,6 +1,6 @@
 resource "aws_eip" "nat_gateway_eip" {
-  count = 3
-  domain   = "vpc"
+  count  = 3
+  domain = "vpc"
 
   tags = merge(
     var.tags,
