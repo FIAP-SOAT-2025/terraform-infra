@@ -1,42 +1,38 @@
-# Infraestrutura com Terraform para Cluster EKS e API Gateway
+# Infraestrutura Base com Terraform para Cluster EKS
 
-Este projeto utiliza Terraform para provisionar uma infraestrutura segura e escalável na AWS, composta por um cluster EKS (Elastic Kubernetes Service) em uma rede privada, exposto de forma segura através de um AWS API Gateway.
+Este projeto utiliza Terraform para provisionar a infraestrutura de rede e o cluster EKS (Elastic Kubernetes Service) na AWS. A arquitetura é projetada para ser segura, com os recursos de computação isolados em uma rede privada.
 
 ## Arquitetura
 
-A arquitetura foi desenhada com o princípio de "segurança em primeiro lugar", isolando a aplicação da internet e controlando o acesso através de um único ponto de entrada gerenciado.
+A infraestrutura provisionada por este módulo consiste nos seguintes componentes:
 
 - **Rede (VPC):**
-  - **Subnets Privadas:** O cluster EKS e suas instâncias (nós) residem em subnets privadas, sem acesso direto da internet, garantindo que a aplicação fique isolada.
-  - **Subnets Públicas:** Contêm os **NAT Gateways**, que permitem que a aplicação em subnets privadas inicie conexões com a internet (para atualizações, etc.), mas bloqueiam conexões iniciadas pela internet.
+  - **Subnets Privadas:** Onde o cluster EKS e suas instâncias (nós) residem, sem acesso direto da internet.
+  - **Subnets Públicas:** Contêm os **NAT Gateways**.
+  - **NAT Gateways:** Permitem que os recursos nas subnets privadas iniciem conexões com a internet (para atualizações, etc.), mas bloqueiam conexões iniciadas pela internet.
   - **Internet Gateway:** Fornece acesso à internet apenas para as subnets públicas.
 
-- **Ponto de Entrada (API Gateway):**
-  - **AWS API Gateway:** Atua como o único ponto de entrada público para a aplicação. Ele recebe as requisições da internet e as encaminha de forma segura para a aplicação.
-  - **VPC Link:** Uma conexão privada e segura é estabelecida entre o API Gateway e o Load Balancer interno da aplicação, garantindo que o tráfego entre eles não passe pela internet pública.
-
 - **Kubernetes (EKS):**
-  - **Cluster EKS:** O control plane gerenciado pela AWS e os node groups (workers) são provisionados.
-  - **Load Balancer Interno:** A aplicação, quando exposta via serviço Kubernetes, cria um Load Balancer **interno**, acessível apenas de dentro da VPC pelo API Gateway.
+  - **Cluster EKS:** Provisiona o control plane gerenciado pela AWS e os node groups (instâncias EC2 que servirão como workers) nas subnets privadas.
 
-- **Armazenamento (EBS CSI):** Configura o addon EBS CSI Driver para permitir o uso de volumes persistentes (EBS).
+- **Armazenamento (EBS CSI):** Configura o addon EBS CSI Driver para permitir o uso de volumes persistentes (EBS) pelo cluster.
 
 - **Segurança:**
-  - **Security Groups:** As regras são estritamente configuradas para permitir tráfego para a aplicação apenas a partir do API Gateway (via VPC Link).
+  - **Security Groups:** Define as regras de segurança para a comunicação interna do cluster e para o tráfego de saída via NAT Gateway.
 
 - **Backend Terraform:** Utiliza um bucket S3 para armazenar o estado (`terraform.tfstate`) e uma tabela DynamoDB para o bloqueio de estado (`state locking`).
 
-## Pré-requisitos
+> A exposição da aplicação para a internet (criação de Load Balancers, API Gateway, etc.) é de responsabilidade de outros módulos (ex: `api`).
 
-Antes de começar, garanta que você tenha os seguintes pré-requisitos instalados e configurados:
+## Pré-requisitos
 
 - **Terraform CLI** (versão ~> 1.0)
 - **AWS CLI** (versão ~> 2.0)
-- **Credenciais da AWS:** Suas credenciais devem estar configuradas localmente.
+- **Credenciais da AWS** configuradas.
 
 ## Setup Inicial (Bootstrap)
 
-O Terraform precisa de um bucket S3 e uma tabela DynamoDB para gerenciar o estado remoto. **Esses dois recursos devem ser criados manualmente ANTES da primeira execução.**
+O bucket S3 e a tabela DynamoDB para o backend do Terraform devem ser criados manualmente antes da primeira execução.
 
 1.  **Criar o Bucket S3:**
     ```bash
@@ -53,32 +49,27 @@ O Terraform precisa de um bucket S3 e uma tabela DynamoDB para gerenciar o estad
         --region us-east-1
     ```
 
-## Como Executar a Infraestrutura
+## Como Executar
 
-1.  **Inicializar o Terraform:**
+1.  **Inicializar:**
     ```bash
     terraform init
     ```
 
-2.  **Planejar as Mudanças:**
+2.  **Planejar:**
     ```bash
     terraform plan
     ```
 
-3.  **Aplicar as Mudanças:**
+3.  **Aplicar:**
     ```bash
     terraform apply
     ```
 
-## CI/CD
-
-O workflow de GitHub Actions definido em `.github/workflows/terraform.yml` automatiza os passos de `init`, `plan` e `apply`.
-
 ## Outputs
 
-Após a execução do `apply`, o Terraform exibirá saídas (outputs) importantes:
+Após a execução, o Terraform exibirá saídas importantes para serem usadas por outros pipelines:
 
-- **`api_gateway_url`**: A URL pública para acessar a aplicação através do API Gateway. Este é o principal ponto de entrada.
 - `cluster_name`: O nome do cluster EKS.
 - `cluster_endpoint`: O endpoint para se conectar ao cluster (acessível via `kubectl`).
 - `vpc_id`: O ID da VPC criada.
