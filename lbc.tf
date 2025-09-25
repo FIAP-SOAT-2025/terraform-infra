@@ -19,4 +19,14 @@ resource "helm_release" "aws_load_balancer_controller" {
     name  = "serviceAccount.name"
     value = "aws-load-balancer-controller"
   }
+
+  set {
+    name = "region"
+    value = var.aws_region
+  }
+
+  set {
+    name = "vpcId"
+    value = aws_vpc.vpc_TC3_G38.id
+  }
 }
