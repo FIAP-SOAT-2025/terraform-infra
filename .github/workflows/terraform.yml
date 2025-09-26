@@ -47,7 +47,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
-      - name: Check AWS Credentials                                                                   │
+      - name: Check AWS Credentials
         run: aws sts get-caller-identity
         
       - name: Terraform Init
@@ -90,7 +90,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
           
-      - name: Check AWS Credentials                                                                   │
+      - name: Check AWS Credentials
         run: aws sts get-caller-identity
         
       - name: Terraform Init
@@ -102,6 +102,18 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
       
+      - name: Configure Kubectl
+        run: |
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-tc3-g38-lanchonete
+          echo "Kubeconfig configured successfully!"
+
+      - name: Deploy NGINX Ingress Controller
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.2/deploy/static/provider/aws/deploy.yaml
+          echo "NGINX Ingress Controller deployment initiated."
+          sleep 60
+          kubectl get pods -n ingress-nginx
+
       - name: Save Terraform State
         run: |
           echo "Infrastructure deployed successfully!"
@@ -135,7 +147,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
           
-      - name: Check AWS Credentials                                                                   │
+      - name: Check AWS Credentials
         run: aws sts get-caller-identity
         
       - name: Terraform Init
