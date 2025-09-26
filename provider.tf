@@ -1,9 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-tc3-g38-lanchonete-infra"
+    bucket         = "terraform-state-tc3-g38-lanchonete"
     key            = "infra/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "terraform-state-lock-table"
   }
   required_providers {
     aws = {
