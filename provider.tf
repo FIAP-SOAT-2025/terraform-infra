@@ -74,7 +74,9 @@ output "cluster_endpoint" {
 
 output "cluster_security_group_id" {
   description = "Security group ID do cluster EKS"
-  value       = aws_security_group.sg.id
+  # value       = aws_security_group.sg.id
+  value       = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
+
 }
 
 output "vpc_id" {
@@ -83,8 +85,8 @@ output "vpc_id" {
 }
 
 output "private_subnet_ids" {
-  description = "IDs das subnets públicas"
-  value       = aws_subnet.subnet_public[*].id
+  description = "IDs das subnets privadas"
+  value       = aws_subnet.subnet_private[*].id
 }
 
 output "aws_region" {
