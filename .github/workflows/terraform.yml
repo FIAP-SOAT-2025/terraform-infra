@@ -6,10 +6,9 @@ on:
       action:
         description: 'Selecione a ação que deseja executar'
         required: true
-        default: 'plan'
+        default: 'apply'
         type: choice
         options:
-          - plan
           - apply
           - destroy
           - s3
