@@ -26,12 +26,12 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   set {
-    name = "region"
+    name  = "region"
     value = var.aws_region
   }
 
   set {
-    name = "vpcId"
+    name  = "vpcId"
     value = aws_vpc.vpc_TC3_G38.id
   }
 }

@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-tc3-g38-lanchonete"
-    key            = "infra/terraform.tfstate"
-    region         = "us-east-1"
+    bucket = "terraform-state-tc3-g38-lanchonete"
+    key    = "infra/terraform.tfstate"
+    region = "us-east-1"
   }
   required_providers {
     aws = {
@@ -75,7 +75,7 @@ output "cluster_endpoint" {
 output "cluster_security_group_id" {
   description = "Security group ID do cluster EKS"
   # value       = aws_security_group.sg.id
-  value       = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
+  value = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
 
 }
 
