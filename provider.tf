@@ -1,9 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state-tc3-g38-lanchonete-infra"
-    key            = "infra/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-state-lock-table"
+    bucket = "terraform-state-tc3-g38-lanchonete"
+    key    = "infra/terraform.tfstate"
+    region = "us-east-1"
   }
   required_providers {
     aws = {
@@ -18,6 +17,22 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.1"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.11.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.23.0"
+    }
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.auth.token
   }
 }
 
@@ -59,7 +74,9 @@ output "cluster_endpoint" {
 
 output "cluster_security_group_id" {
   description = "Security group ID do cluster EKS"
-  value       = aws_security_group.sg.id
+  # value       = aws_security_group.sg.id
+  value = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
+
 }
 
 output "vpc_id" {
@@ -68,8 +85,8 @@ output "vpc_id" {
 }
 
 output "private_subnet_ids" {
-  description = "IDs das subnets públicas"
-  value       = aws_subnet.subnet_public[*].id
+  description = "IDs das subnets privadas"
+  value       = aws_subnet.subnet_private[*].id
 }
 
 output "aws_region" {
