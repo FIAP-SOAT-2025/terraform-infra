@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "http_api" {
-  name          = "http-api-lanchonete"
+  name          = "http-api-lanchonete-v1"
   protocol_type = "HTTP"
 }
 

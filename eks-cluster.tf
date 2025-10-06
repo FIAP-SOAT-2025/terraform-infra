@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "cluster" {
-  name = "eks-${var.projectName}"
+  name = "eks-${var.projectName}-v1"
 
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
