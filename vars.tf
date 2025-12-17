@@ -6,7 +6,7 @@ variable "aws_region" {
 
 variable "projectName" {
   description = "The name of the project"
-  default     = "tc3-g38-lanchonete-v1"
+  default     = "tc4-lanchonete-v1"
 }
 
 variable "cidr_vpc" {
@@ -17,7 +17,7 @@ variable "cidr_vpc" {
 variable "tags" {
   description = "A map of tags to assign to all resources"
   default = {
-    Name = "tc3-g38-lanchonete-v1"
+    Name = "tc4-lanchonete-v1"
   }
 }
 
