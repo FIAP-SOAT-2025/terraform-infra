@@ -57,8 +57,9 @@ jobs:
       
       - name: Configure Kubectl
         run: |
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-tc3-g38-lanchonete
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-tc4-lanchonete-v1
           echo "Kubeconfig configured successfully!"
+          kubectl cluster-info
 
       - name: Deploy NGINX Ingress Controller
         run: |
@@ -72,6 +73,9 @@ jobs:
           echo "Infrastructure deployed successfully!"
           echo "EKS Cluster: eks-tc3-g38-lanchonete"
           echo "Region: ${{ env.AWS_REGION }}"
+          echo ""
+          echo "=== Infrastructure Outputs ==="
+          terraform output
 
   terraform-destroy:
     name: Infrastructure Destroy
