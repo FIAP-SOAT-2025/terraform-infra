@@ -57,7 +57,7 @@ jobs:
       
       - name: Configure Kubectl
         run: |
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-tc4-lanchonete-v1
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-tc4-lanchonete-v1-v1
           echo "Kubeconfig configured successfully!"
           kubectl cluster-info
 
