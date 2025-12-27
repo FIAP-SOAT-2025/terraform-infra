@@ -71,7 +71,7 @@ jobs:
       - name: Save Terraform State
         run: |
           echo "Infrastructure deployed successfully!"
-          echo "EKS Cluster: eks-tc3-g38-lanchonete"
+          echo "EKS Cluster: eks-tc4-lanchonete-v1-v1"
           echo "Region: ${{ env.AWS_REGION }}"
           echo ""
           echo "=== Infrastructure Outputs ==="
